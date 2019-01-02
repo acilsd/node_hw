@@ -25,15 +25,16 @@ const server = http.createServer((req, res) => {
       body.push(chunk);
     });
 
-    req.on('end', () => {
+    return req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
       const message = parsedBody.split('=')[1];
-      fs.writeFileSync('message.txt', message);
-      console.log(parsedBody);      
+      fs.writeFile('message.txt', message, (err) => {
+        if (err) console.error(err);
+        res.writeHead(302, { Location: '/' });
+        return res.end();
+      });
+      // console.log(parsedBody); 
     });
-
-    res.writeHead(302, { Location: '/' });
-    return res.end();
   }
   // console.log(req, res);
   res.setHeader('Content-Type', 'text/html');
