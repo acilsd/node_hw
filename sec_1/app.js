@@ -1,4 +1,5 @@
 const http = require('http');
+const fs = require('fs');
 const PORT = '8087';
 
 // const rqListener = (req, res) => {
@@ -6,12 +7,19 @@ const PORT = '8087';
 // };
 
 const server = http.createServer((req, res) => {
+  const method = req.method;
   const url = req.url;
   if (url === '/') {
     res.write('<html>');
     res.write('<head><title>index</title></head>');
     res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">send</button></input></form></body>');
     res.write('</html>');
+    return res.end();
+  }
+
+  if (url === '/message' && method === 'POST') {
+    fs.writeFileSync('message.txt', 'HELLO WORLD');
+    res.writeHead(302, { Location: '/' });
     return res.end();
   }
   // console.log(req, res);
