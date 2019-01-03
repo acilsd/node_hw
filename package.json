@@ -4,7 +4,8 @@
   "description": "nodejs helloworlds",
   "main": "app.js",
   "scripts": {
-    "sec_1": "nodemon sec_1/app.js"
+    "sec_1": "nodemon sec_1/app.js",
+    "sec_2": "nodemon sec_2/app.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "nodemon": "^1.18.9"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
   }
 }
