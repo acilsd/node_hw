@@ -1,12 +1,9 @@
-const path = require('path');
-
-const express = require('express');
-
-const rootDir = require('../util/path');
+import express from 'express';
+import { rootDir }  from '../util/path';
 
 const router = express.Router();
 
-const products = [];
+const products: any[] = [];
 
 // /admin/add-product => GET
 router.get('/add-product', (req, res, next) => {
@@ -25,5 +22,5 @@ router.post('/add-product', (req, res, next) => {
   res.redirect('/');
 });
 
-exports.routes = router;
-exports.products = products;
+export { router as adminRoutes };
+export { products };
