@@ -1,4 +1,4 @@
-export const products: any[] = [];
+import { Product } from '../models/product/product';
 
 export const getAddProduct =  (req: any, res: any, next: any) => {
   res.render('add-product', {
@@ -11,17 +11,20 @@ export const getAddProduct =  (req: any, res: any, next: any) => {
 };
 
 export const postAddProduct  = (req: any, res: any, next: any) => {
-  products.push({ title: req.body.title });
+  const product = new Product(req.body.title);
+  product.save();
   res.redirect('/');
 };
 
 export const getProducts = (req: any, res: any, next: any) => {
-  res.render('shop', {
-    prods: products,
-    pageTitle: 'Shop',
-    path: '/',
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true,
+  Product.fetchAll((products: any) => {
+    res.render('shop', {
+      prods: products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   });
 };
