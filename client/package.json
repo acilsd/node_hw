@@ -1,0 +1,36 @@
+{
+  "name": "nil",
+  "version": "0.0.1",
+  "license": "dunno",
+  "scripts": {
+    "lint": "tslint --project .",
+    "lint-fix": "tslint --project . --fix",
+    "start": "webpack-dev-server --mode development --hot",
+    "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "@types/history": "^4.7.2",
+    "@types/node": "^10.12.18",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-router-dom": "^4.3.1",
+    "history": "^4.7.2",
+    "mobx": "^5.8.0",
+    "mobx-logger": "^0.7.1",
+    "mobx-react": "^5.4.3",
+    "mobx-react-router": "^4.0.5",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-hot-loader": "^4.6.3",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "styled-components": "^4.1.3",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.12.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
+  }
+}
