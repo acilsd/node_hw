@@ -1,9 +1,12 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import graphqlHttp from 'express-graphql';
 
 const app = express();
 const PORT = '8087';
 
-app.use(bodyParser.urlencoded({ extended: false }));
+import { gqlConfig } from './config/gqlConfig';
 
-app.listen(PORT, () => console.log('listening '));
+app.use(express.json());
+app.use('/gql', graphqlHttp(gqlConfig));
+
+app.listen(PORT, () => console.log(`listening ${PORT}`));
