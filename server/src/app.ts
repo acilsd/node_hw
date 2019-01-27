@@ -9,4 +9,4 @@ import { gqlConfig } from './config/gqlConfig';
 app.use(express.json());
 app.use('/gql', graphqlHttp(gqlConfig));
 
-app.listen(PORT, () => console.log(`listening ${PORT}`));
+app.listen(PORT);
