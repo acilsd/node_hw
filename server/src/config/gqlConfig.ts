@@ -47,7 +47,7 @@ export const gqlConfig: IGqlConfig = {
       return eventModel.find()
         .then((events) => {
           return events.map((ev: any) => {
-            return { ...ev._doc, _id: ev._doc._id.toString() };
+            return { ...ev._doc, _id: ev.id };
           });
         })
         .catch((err) => { throw err; });
@@ -63,7 +63,7 @@ export const gqlConfig: IGqlConfig = {
       return event.save()
         .then((res: any) => {
           console.log(res);
-          return { ...res._doc };
+          return { ...res._doc, _id: res.id };
         })
         .catch((err) => {
           console.error(err);
