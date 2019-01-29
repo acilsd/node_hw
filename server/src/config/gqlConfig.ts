@@ -47,7 +47,7 @@ export const gqlConfig: IGqlConfig = {
       return eventModel.find()
         .then((events) => {
           return events.map((ev: any) => {
-            return { ...ev._doc };
+            return { ...ev._doc, _id: ev._doc._id.toString() };
           });
         })
         .catch((err) => { throw err; });
