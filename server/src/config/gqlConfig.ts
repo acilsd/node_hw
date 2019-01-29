@@ -1,19 +1,11 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
+import { IEvent } from '../types/events.types';
+import { eventModel } from '../models/event';
 
-const HARDCODED_EVENTS: IEvent[] = [];
-
-export interface IGqlConfig {
+interface IGqlConfig {
   schema: GraphQLSchema;
   rootValue: any;
   graphiql: any;
-}
-
-export interface IEvent {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  date: string;
 }
 
 interface IEVArgs {
@@ -51,19 +43,33 @@ export const gqlConfig: IGqlConfig = {
     }
   `),
   rootValue: {
-    events: (): IEvent[] => HARDCODED_EVENTS,
-    createEvent: (args: IEVArgs): IEvent => {
-      const event = {
-        _id: Date.now().toString(),
+    events: () => {
+      return eventModel.find()
+        .then((events) => {
+          return events.map((ev: any) => {
+            return { ...ev._doc };
+          });
+        })
+        .catch((err) => { throw err; });
+    },
+    createEvent: (args: IEVArgs) => {
+      const event = new eventModel({
         title: args.eventInput.title,
         description: args.eventInput.description,
         price: args.eventInput.price,
-        date: args.eventInput.date,
-      };
+        date: new Date(args.eventInput.date),
+      });
 
-      HARDCODED_EVENTS.push(event);
+      return event.save()
+        .then((res: any) => {
+          console.log(res);
+          return { ...res._doc };
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err;
+        });
 
-      return event;
     },
   },
   // debugger
