@@ -1,8 +1,6 @@
-import { buildSchema, GraphQLSchema } from 'graphql';
-import { IEvent, IUser } from '../types/events.types';
-import { eventModel } from '../models/event';
-import { userModel } from '../models/user';
-import bcrypt from 'bcryptjs';
+import { GraphQLSchema } from 'graphql';
+import { mainSchema } from './schemas/index';
+import { mainResolver } from './resolvers/index';
 
 interface IEventSchema {
   schema: GraphQLSchema;
@@ -10,119 +8,11 @@ interface IEventSchema {
   graphiql: any;
 }
 
-interface IEVArgs {
-  eventInput: IEvent;
-}
-
-interface IEUSerArgs {
-  userInput: IUser;
-}
-
 export const eventSchema: IEventSchema = {
 
-  schema: buildSchema(`
-    type Event {
-      _id: ID!
-      title: String!
-      description: String!
-      price: Float!
-      date: String!
-    }
+  schema: mainSchema,
 
-    type User {
-      _id: ID!
-      email: String!
-      password: String
-    }
-
-    input EventInput {
-      title: String!
-      description: String!
-      price: Float!
-      date: String!
-    }
-
-    input UserInput {
-      email: String!
-      password: String!
-    }
-
-    type RootQuery {
-      events: [Event!]!
-    }
-
-    type RootMutation {
-      createEvent(eventInput: EventInput): Event
-      createUser(userInput: UserInput): User
-    }
-
-    schema {
-      query: RootQuery
-      mutation: RootMutation
-    }
-  `),
-
-  rootValue: {
-    events: () => {
-      return eventModel.find()
-        .then((events) => {
-          return events.map((ev: any) => {
-            return { ...ev._doc, _id: ev.id };
-          });
-        })
-        .catch((err) => { throw err; });
-    },
-
-    createEvent: (args: IEVArgs) => {
-      const event = new eventModel({
-        title: args.eventInput.title,
-        description: args.eventInput.description,
-        price: args.eventInput.price,
-        date: new Date(args.eventInput.date),
-        creator: '5c533fd1a686c010c84955b8', // hardcoded
-      });
-      let createdEvent: any;
-
-      return event.save()
-        .then((res: any) => {
-          // hardcoded
-          createdEvent = { ...res._doc, _id: res.id };
-          return userModel.findById('5c533fd1a686c010c84955b8') as any;
-        })
-        .then((usr: any) => {
-          if (!usr) throw new Error('User does not exist');
-          usr.createdEvents.push(event);
-          return usr.save();
-        })
-        .then((res: any) => {
-          return createdEvent;
-        })
-        .catch((err: Error) => {
-          throw err;
-        });
-
-    },
-
-    createUser: (args: IEUSerArgs) => {
-      return userModel.findOne({ email: args.userInput.email })
-        .then((user) => {
-          if (user) throw new Error('User already exists');
-          return bcrypt.hash(args.userInput.password, 12);
-        })
-        .then((hpass) => {
-          const user = new userModel({
-            email: args.userInput.email,
-            password: hpass,
-          });
-
-          return user.save();
-        })
-        .then((res: any) => {
-          return { ...res._doc, password: null, _id: res.id };
-        })
-        .catch((err) => console.error(err));
-    },
-  },
+  rootValue: mainResolver,
   // debugger
   graphiql: true,
 };
