@@ -2,7 +2,7 @@ import { buildSchema, GraphQLSchema } from 'graphql';
 import { IEvent } from '../types/events.types';
 import { eventModel } from '../models/event';
 
-interface IGqlConfig {
+interface IEventSchema {
   schema: GraphQLSchema;
   rootValue: any;
   graphiql: any;
@@ -12,7 +12,7 @@ interface IEVArgs {
   eventInput: IEvent;
 }
 
-export const gqlConfig: IGqlConfig = {
+export const eventSchema: IEventSchema = {
   schema: buildSchema(`
     type Event {
       _id: ID!

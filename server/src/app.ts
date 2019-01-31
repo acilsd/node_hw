@@ -8,11 +8,11 @@ import mongoose from 'mongoose';
 const app = express();
 const PORT = '8087';
 
-import { gqlConfig } from './config/gqlConfig';
+import { eventSchema } from './schemas/eventSchema';
 import { dbOpts } from './config/db';
 
 app.use(express.json());
-app.use('/gql', graphqlHttp(gqlConfig));
+app.use('/gql', graphqlHttp(eventSchema));
 
 mongoose.connect(dbOpts.string, dbOpts.opts)
   .then(() => {
