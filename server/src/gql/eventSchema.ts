@@ -94,7 +94,11 @@ export const eventSchema: IEventSchema = {
     },
 
     createUser: (args: IEUSerArgs) => {
-      return bcrypt.hash(args.userInput.password, 12)
+      return userModel.findOne({ email: args.userInput.email })
+        .then((user) => {
+          if (user) throw new Error('User already exists');
+          return bcrypt.hash(args.userInput.password, 12);
+        })
         .then((hpass) => {
           const user = new userModel({
             email: args.userInput.email,
@@ -104,7 +108,7 @@ export const eventSchema: IEventSchema = {
           return user.save();
         })
         .then((res: any) => {
-          return { ...res._doc, _id: res.id };
+          return { ...res._doc, password: null, _id: res.id };
         })
         .catch((err) => console.error(err));
     },
