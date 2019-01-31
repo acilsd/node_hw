@@ -15,7 +15,7 @@ interface IEVArgs {
 }
 
 interface IEUSerArgs {
-  eventInput: IUser;
+  userInput: IUser;
 }
 
 export const eventSchema: IEventSchema = {
@@ -94,11 +94,11 @@ export const eventSchema: IEventSchema = {
     },
 
     createUser: (args: IEUSerArgs) => {
-      return bcrypt.hash(args.eventInput.password, 12)
+      return bcrypt.hash(args.userInput.password, 12)
         .then((hpass) => {
           const user = new userModel({
-            email: args.eventInput.email,
-            password: args.eventInput.password,
+            email: args.userInput.email,
+            password: hpass,
           });
 
           return user.save();
