@@ -1,6 +1,8 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { IEvent } from '../types/events.types';
+import { IEvent, IUser } from '../types/events.types';
 import { eventModel } from '../models/event';
+import { userModel } from '../models/user';
+import bcrypt from 'bcryptjs';
 
 interface IEventSchema {
   schema: GraphQLSchema;
@@ -12,7 +14,12 @@ interface IEVArgs {
   eventInput: IEvent;
 }
 
+interface IEUSerArgs {
+  eventInput: IUser;
+}
+
 export const eventSchema: IEventSchema = {
+
   schema: buildSchema(`
     type Event {
       _id: ID!
@@ -22,11 +29,22 @@ export const eventSchema: IEventSchema = {
       date: String!
     }
 
+    type User {
+      _id: ID!
+      email: String!
+      password: String
+    }
+
     input EventInput {
       title: String!
       description: String!
       price: Float!
       date: String!
+    }
+
+    input UserInput {
+      email: String!
+      password: String!
     }
 
     type RootQuery {
@@ -35,6 +53,7 @@ export const eventSchema: IEventSchema = {
 
     type RootMutation {
       createEvent(eventInput: EventInput): Event
+      createUser(userInput: UserInput): User
     }
 
     schema {
@@ -42,6 +61,7 @@ export const eventSchema: IEventSchema = {
       mutation: RootMutation
     }
   `),
+
   rootValue: {
     events: () => {
       return eventModel.find()
@@ -52,6 +72,7 @@ export const eventSchema: IEventSchema = {
         })
         .catch((err) => { throw err; });
     },
+
     createEvent: (args: IEVArgs) => {
       const event = new eventModel({
         title: args.eventInput.title,
@@ -70,6 +91,22 @@ export const eventSchema: IEventSchema = {
           throw err;
         });
 
+    },
+
+    createUser: (args: IEUSerArgs) => {
+      return bcrypt.hash(args.eventInput.password, 12)
+        .then((hpass) => {
+          const user = new userModel({
+            email: args.eventInput.email,
+            password: args.eventInput.password,
+          });
+
+          return user.save();
+        })
+        .then((res: any) => {
+          return { ...res._doc, _id: res.id };
+        })
+        .catch((err) => console.error(err));
     },
   },
   // debugger

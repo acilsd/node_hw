@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 const app = express();
 const PORT = '8087';
 
-import { eventSchema } from './schemas/eventSchema';
+import { eventSchema } from './gql/eventSchema';
 import { dbOpts } from './config/db';
 
 app.use(express.json());
