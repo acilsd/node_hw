@@ -79,15 +79,25 @@ export const eventSchema: IEventSchema = {
         description: args.eventInput.description,
         price: args.eventInput.price,
         date: new Date(args.eventInput.date),
+        creator: '5c533fd1a686c010c84955b8', // hardcoded
       });
+      let createdEvent: any;
 
       return event.save()
         .then((res: any) => {
-          console.log(res);
-          return { ...res._doc, _id: res.id };
+          // hardcoded
+          createdEvent = { ...res._doc, _id: res.id };
+          return userModel.findById('5c533fd1a686c010c84955b8') as any;
         })
-        .catch((err) => {
-          console.error(err);
+        .then((usr: any) => {
+          if (!usr) throw new Error('User does not exist');
+          usr.createdEvents.push(event);
+          return usr.save();
+        })
+        .then((res: any) => {
+          return createdEvent;
+        })
+        .catch((err: Error) => {
           throw err;
         });
 
